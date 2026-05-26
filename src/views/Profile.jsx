@@ -3,15 +3,18 @@ import { request } from '../utils/api';
 import Sidebar from '../components/Sidebar';
 import Header from '../components/Header';
 
-export default function Profile() {
-  const [profile, setProfile] = useState({ username: '', email: '' });
+export default function Profile({user, setUser}) {
+  const [profile, setProfile] = useState({ name: '', email: '' });
   const [loading, setLoading] = useState(true);
 
 useEffect(() => {
     const fetchProfile = async () => {
       try {
         const data = await request('/user/profile'); 
-        setProfile(data);
+        setProfile({
+          name: data.username || '',
+          email: data.email || ''
+        });
       } catch (err) {
         console.error("Failed to load profile", err);
       } finally {
@@ -29,6 +32,17 @@ useEffect(() => {
         body: JSON.stringify(profile),
       });
       alert("Profile updated successfully!");
+      const updatedData = await request('/user/profile');
+      const newName = updatedData.username || '';
+      
+      // 1. Update the local profile form state
+      setProfile({
+        name: newName,
+        email: updatedData.email || ''
+      });
+
+      setUser({ ...user, name: newName });
+
     } catch (err) {
       alert("Error updating profile: " + err.message);
     }
@@ -50,7 +64,7 @@ useEffect(() => {
   return (
     <div className="min-h-screen pl-64 pt-20 bg-slate-50">
       <Sidebar />
-      <Header pageTitle="Account Settings" />
+      <Header pageTitle="Account Settings" user={user}/>
       
       <main className="p-8 max-w-2xl mx-auto">
         <div className="bg-white p-8 rounded-2xl shadow-sm border">
@@ -58,14 +72,14 @@ useEffect(() => {
           
           <label className="block text-sm font-bold text-slate-600 mb-2">Username</label>
           <input 
-            value={profile.username} 
-            onChange={(e) => setProfile({...profile, username: e.target.value})}
+            value={profile.name || ""} 
+            onChange={(e) => setProfile({...profile, name: e.target.value})}
             className="w-full p-3 border border-slate-200 rounded-xl mb-4" 
           />
           
           <label className="block text-sm font-bold text-slate-600 mb-2">Email</label>
           <input 
-            value={profile.email} 
+            value={profile.email || ""} 
             onChange={(e) => setProfile({...profile, email: e.target.value})}
             className="w-full p-3 border border-slate-200 rounded-xl mb-6" 
           />

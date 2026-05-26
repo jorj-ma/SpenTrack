@@ -5,17 +5,19 @@ import Header from '../components/Header';
 import ExpenseModal from '../components/ExpenseModal';
 import { Edit2, Trash2, Plus, Download } from 'lucide-react';
 
-export default function Expenses() {
+export default function Expenses({user}) {
   const [expenses, setExpenses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [activeExpense, setActiveExpense] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  
 
   const loadExpensesData = async () => {
     try {
       const list = await request(API_ROUTES.expenses.base);
-      const catList = await request('/categories');
+      const catList = await request("/categories");
       setExpenses(list);
       setCategories(catList);
     } catch (err) {
@@ -67,12 +69,22 @@ export default function Expenses() {
     }
   };
 
+const filteredExpenses = expenses.filter((exp) =>
+  exp.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  exp.category?.toLowerCase().includes(searchTerm.toLowerCase())
+);
+  
   if (loading) return <div className="flex min-h-screen items-center justify-center font-bold text-slate-400">Loading Transaction Matrices...</div>;
 
   return (
     <div className="min-h-screen pl-64 pt-20 bg-slate-50">
       <Sidebar />
-      <Header pageTitle="Expenses" />
+      <Header 
+        pageTitle="Expenses"
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        user={user}
+      />
 
       <main className="p-8 space-y-6 max-w-7xl mx-auto">
         <div className="flex justify-between items-center border-b border-slate-200 pb-4">
@@ -102,10 +114,10 @@ export default function Expenses() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 text-sm font-medium text-slate-600">
-              {expenses.length === 0 ? (
+              {filteredExpenses.length === 0 ? (
                 <tr><td colSpan="5" className="text-center py-10 text-slate-400">No transactions recorded yet.</td></tr>
               ) : (
-                expenses.map((item) => (
+                filteredExpenses.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/40 transition-colors">
                     <td className="p-4">{new Date(item.date).toLocaleDateString()}</td>
                     <td className="p-4"><span className="px-2 py-1 bg-slate-100 text-slate-700 rounded-lg text-xs font-semibold">{item.category}</span></td>

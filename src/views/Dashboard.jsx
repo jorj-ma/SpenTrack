@@ -7,7 +7,7 @@ import PieChart from '../components/PieChart';
 import ExpenseModal from '../components/ExpenseModal';
 import { useNavigate } from 'react-router-dom';
 
-export default function Dashboard() {
+export default function Dashboard({user}) {
   const [summary, setSummary] = useState({
     totalSpent: 0,
     remainingBudget: 0,
@@ -18,8 +18,8 @@ export default function Dashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditingBudget, setIsEditingBudget] = useState(false);
   const [editValue, setEditValue] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const fetchDashboardData = async () => {
     try {
@@ -87,6 +87,7 @@ export default function Dashboard() {
             pageTitle="Dashboard"
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            user={user}
         />
 
       <main className="p-8 space-y-8 max-w-7xl mx-auto">

@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { request, API_ROUTES } from '../utils/api';
 import { Receipt } from 'lucide-react';
 
-export default function Register() {
+export default function Register({}) {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
