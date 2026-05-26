@@ -3,6 +3,7 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 import Dashboard from "./views/Dashboard";
 import Profile from "./views/Profile";
+import Expenses from "./views/Expenses";
 
 function ProtectedRoute({ children }) {
   const isAuthenticared = !!localStorage.getItem('token')
@@ -28,6 +29,13 @@ export default function App() {
           </ProtectedRoute>
         }
         />
+        <Route path="/expenses" element={
+          <ProtectedRoute>
+            <Expenses/>
+          </ProtectedRoute>
+        }
+        />
+
       </Routes>
     </BrowserRouter>
   )
