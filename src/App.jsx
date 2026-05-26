@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./views/Login";
 import Register from "./views/Register";
 import Dashboard from "./views/Dashboard";
+import Profile from "./views/Profile";
 
 function ProtectedRoute({ children }) {
   const isAuthenticared = !!localStorage.getItem('token')
@@ -18,6 +19,12 @@ export default function App() {
         <Route path="/" element={
           <ProtectedRoute>
             <Dashboard/>
+          </ProtectedRoute>
+        }
+        />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile/>
           </ProtectedRoute>
         }
         />
