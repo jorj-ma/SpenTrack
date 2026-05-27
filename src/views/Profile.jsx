@@ -52,6 +52,8 @@ useEffect(() => {
     if (window.confirm("Are you sure? This will delete all your data!")) {
       try {
         await request('/user/profile', { method: 'DELETE' });
+        localStorage.removeItem('token');
+        setUser({name:'Guest'})
         window.location.href = "/login";
       } catch (err) {
         alert("Error deleting account: " + err.message);

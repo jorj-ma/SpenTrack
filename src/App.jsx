@@ -8,9 +8,14 @@ import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import { request } from "./utils/api";
 
-function ProtectedRoute({ children }) {
-  const isAuthenticared = !!localStorage.getItem('token')
-  return isAuthenticared? children: <Navigate to="/login" replace />
+function ProtectedRoute({user, children }) {
+  const isAuthenticared = !!localStorage.getItem('token');
+  
+  if (!isAuthenticared) return <Navigate to="/login" replace />;
+  
+  if (user.name === 'User') return <div className="p-8">Loading...</div>;
+  
+  return children
 }
 
 
@@ -27,7 +32,10 @@ export default function App() {
           setUser({ name: data.name || data.username }); // Set the global user object
         } catch (err) {
           console.error("Could not fetch user", err);
-        }
+          console.warn("Session invalid");
+          localStorage.removeItem('token');
+          window.location.href = "/login";   // Force logout
+          }
       }
     };
     fetchUserData();
@@ -40,19 +48,19 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={
-          <ProtectedRoute>
+          <ProtectedRoute user={user}>
             <Dashboard user={user}/>
           </ProtectedRoute>
         }
         />
         <Route path="/profile" element={
-          <ProtectedRoute>
+          <ProtectedRoute user={user} setUser={setUser}>
             <Profile user={user} setUser={setUser} />
           </ProtectedRoute>
         }
         />
         <Route path="/expenses" element={
-          <ProtectedRoute>
+          <ProtectedRoute user={user}>
             <Expenses user={user}/>
           </ProtectedRoute>
         }
