@@ -1,7 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { LayoutDashboard, PilcrowRight, LogOut } from 'lucide-react';
 
-export default function Sidebar() {
+export default function Sidebar({setUser}) {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -13,6 +13,7 @@ export default function Sidebar() {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
+    if (setUser) setUser(null);
     navigate('/login');
   };
 

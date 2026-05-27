@@ -12,15 +12,14 @@ function ProtectedRoute({user, children }) {
   const isAuthenticared = !!localStorage.getItem('token');
   
   if (!isAuthenticared) return <Navigate to="/login" replace />;
-  
-  if (user.name === 'User') return <div className="p-8">Loading...</div>;
-  
+    
   return children
 }
 
 
 export default function App() {
-  const [user, setUser] = useState({ name: 'User' }); 
+  const [user, setUser] = useState(null); 
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,17 +28,23 @@ export default function App() {
         try {
           // Fetch current user data from your API
           const data = await request('/user/profile'); 
-          setUser({ name: data.name || data.username }); // Set the global user object
+          setUser({ name: data.name || data.username });
         } catch (err) {
           console.error("Could not fetch user", err);
           console.warn("Session invalid");
           localStorage.removeItem('token');
-          window.location.href = "/login";   // Force logout
-          }
+          setUser(null)
+          window.location.href = "/login"
+        }
+        
+      } else {
+        setUser(null)
       }
+      setLoading(false)
     };
     fetchUserData();
   }, []);
+  if (loading) return <div className="p-8">Loading ...</div>;
 
 
   return (
@@ -48,8 +53,8 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/" element={
-          <ProtectedRoute user={user}>
-            <Dashboard user={user}/>
+          <ProtectedRoute setUser={setUser} user={user}>
+            <Dashboard setUser={setUser} user={user}/>
           </ProtectedRoute>
         }
         />
@@ -60,8 +65,8 @@ export default function App() {
         }
         />
         <Route path="/expenses" element={
-          <ProtectedRoute user={user}>
-            <Expenses user={user}/>
+          <ProtectedRoute setUser={setUser} user={user}>
+            <Expenses setUser={setUser} user={user}/>
           </ProtectedRoute>
         }
         />

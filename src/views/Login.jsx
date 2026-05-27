@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { request, API_ROUTES } from '../utils/api';
 import { Receipt } from 'lucide-react';
 
-export default function Login() {
+export default function Login({setU}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
@@ -24,6 +24,7 @@ export default function Login() {
       localStorage.setItem('token', data.token);
       localStorage.setItem('userName', data.user.name);
       navigate('/');
+      window.location.href = "/";
     } catch (err) {
       setError(err.message || "Invalid email or password");
     } finally {

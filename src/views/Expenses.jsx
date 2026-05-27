@@ -5,7 +5,7 @@ import Header from '../components/Header';
 import ExpenseModal from '../components/ExpenseModal';
 import { Edit2, Trash2, Plus, Download } from 'lucide-react';
 
-export default function Expenses({user}) {
+export default function Expenses({user, setUser}) {
   const [expenses, setExpenses] = useState([]);
   const [categories, setCategories] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -78,7 +78,7 @@ const filteredExpenses = expenses.filter((exp) =>
 
   return (
     <div className="min-h-screen pl-64 pt-20 bg-slate-50">
-      <Sidebar />
+      <Sidebar setUser={setUser} />
       <Header 
         pageTitle="Expenses"
         searchTerm={searchTerm}

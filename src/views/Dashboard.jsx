@@ -7,7 +7,7 @@ import PieChart from '../components/PieChart';
 import ExpenseModal from '../components/ExpenseModal';
 import { useNavigate } from 'react-router-dom';
 
-export default function Dashboard({user}) {
+export default function Dashboard({user, setUser}) {
   const [summary, setSummary] = useState({
     totalSpent: 0,
     remainingBudget: 0,
@@ -82,11 +82,12 @@ export default function Dashboard({user}) {
 
   return (
     <div className="min-h-screen pl-64 pt-20 bg-slate-50">
-      <Sidebar />
+      <Sidebar setUser={setUser} />
         <Header
             pageTitle="Dashboard"
             searchTerm={searchTerm}
             setSearchTerm={setSearchTerm}
+            setUser={setUser}
             user={user}
         />
 
